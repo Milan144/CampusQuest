@@ -9,7 +9,7 @@ const App = () => {
   const [showScanner, setShowScanner] = useState(false);
 
   const handleCompleteQuest = () => {
-    setShowScanner(true);
+    setShowScanner((prevShowScanner) => !prevShowScanner);
   };
 
   return (
