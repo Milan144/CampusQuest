@@ -79,7 +79,6 @@ const App = () => {
                   <div className="-mt-px flex divide-x divide-gray-200">
                     <div className="-ml-px flex w-0 flex-1">
                       <a
-                        href="tel:+1-202-555-0170"
                         className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
                         onClick={handleCompleteQuest}
                       >
