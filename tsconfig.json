@@ -26,7 +26,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/scanner/scanner.js"
+    "src/app/components/scanner.js"
   ],
   "exclude": ["node_modules"]
 }

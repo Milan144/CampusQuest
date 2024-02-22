@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.icon {
+  margin-left: 20%;
+  margin-top: 10%;
+}
+
+.userbtn {
+  margin-right: 2%;
+}
