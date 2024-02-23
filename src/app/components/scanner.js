@@ -16,7 +16,7 @@ class Scanner extends Component {
 
   handleScan = (data) => {
     if (data) {
-      console.log(data);
+      console.info(data);
       this.setState({ result: data });
     }
   };

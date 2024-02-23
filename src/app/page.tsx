@@ -4,12 +4,54 @@ import "./globals.css";
 import Scanner from "./components/scanner";
 import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
+import { useGeolocated } from "react-geolocated";
 
 const App = () => {
   const [showScanner, setShowScanner] = useState(false);
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    userDecisionTimeout: 5000,
+  });
 
-  const handleCompleteQuest = () => {
-    setShowScanner((prevShowScanner) => !prevShowScanner);
+  const handleCompleteQuest = async () => {
+    // Hide the scanner i its already shown
+    if (showScanner) {
+      setShowScanner(false);
+      return;
+    }
+    if (!isGeolocationAvailable || !isGeolocationEnabled || coords == null) {
+      console.error("Geolocation not available or not enabled");
+      setShowScanner(false);
+      return;
+    }
+
+    const schoolLocation = { lat: 49.2008356, lng: -0.3501047 };
+
+    // Convert to radians
+    const lat1 = (schoolLocation.lat * Math.PI) / 180;
+    const lng1 = (schoolLocation.lng * Math.PI) / 180;
+    const lat2 = (coords.latitude * Math.PI) / 180;
+    const lng2 = (coords.longitude * Math.PI) / 180;
+
+    // Haversine formula
+    const dlat = lat2 - lat1;
+    const dlng = lng2 - lng1;
+    const a =
+      Math.sin(dlat / 2) ** 2 +
+      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    // Earth radius in km
+    const R = 6371;
+
+    // Distance in km
+    const distance = R * c;
+
+    // If the user is in a 1km circle around the school location
+    const isLocationValid = distance <= 1;
+    setShowScanner(isLocationValid); // Set showScanner based on the result
   };
 
   return (
