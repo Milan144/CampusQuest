@@ -11,5 +11,6 @@ export async function GET(req, res) {
     return NextResponse.json(quests);
   } catch (e) {
     console.error(e);
+    return NextResponse.error({ status: 500 });
   }
 }
