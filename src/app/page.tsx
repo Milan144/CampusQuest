@@ -36,7 +36,7 @@ const App = () => {
     }
 
     //const schoolLocation = { lat: 49.2008356, lng: -0.3501047 };
-    const schoolLocation = { lat: 49.18384013699151, lng: -0.35605318900986616 };
+    const schoolLocation = { lat: 49.183289, lng: -0.405666 };
 
     // Convert to radians
     const lat1 = (schoolLocation.lat * Math.PI) / 180;
