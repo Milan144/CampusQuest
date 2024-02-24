@@ -7,62 +7,64 @@ import Image from "next/image";
 import { useGeolocated } from "react-geolocated";
 
 const App = () => {
-  const [showScanner, setShowScanner] = useState(false);
-  const [quests, setQuests] = useState("")
-  
-  useEffect(()=>{
-    fetch('/api/quests')
-        .then((response)=>response.json())
-        .then((json)=>setQuests(json))
-  },[])
+  const [locationValid, setLocationValid] = useState(false);
+  const [quests, setQuests] = useState("");
 
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
-    positionOptions: {
-      enableHighAccuracy: true,
-    },
-    userDecisionTimeout: 5000,
-  });
+  useEffect(() => {
+    fetch("/api/quests")
+      .then((response) => response.json())
+      .then((json) => setQuests(json));
+  }, []);
 
-  const handleCompleteQuest = async () => {
-    // Hide the scanner if its already shown
-    if (showScanner) {
-      setShowScanner(false);
-      return;
-    }
-    if (!isGeolocationAvailable || !isGeolocationEnabled || coords == null) {
-      console.error("Geolocation not available or not enabled");
-      setShowScanner(false);
-      return;
-    }
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      userDecisionTimeout: 5000,
+    });
 
-    //const schoolLocation = { lat: 49.2008356, lng: -0.3501047 };
-    const schoolLocation = { lat: 49.183289, lng: -0.405666 };
+  useEffect(() => {
+    const handleCompleteQuest = async () => {
+      if (!isGeolocationAvailable || !isGeolocationEnabled || coords == null) {
+        console.error("Geolocation not available or not enabled");
+        // TODO: Show error popup
+        return;
+      }
 
-    // Convert to radians
-    const lat1 = (schoolLocation.lat * Math.PI) / 180;
-    const lng1 = (schoolLocation.lng * Math.PI) / 180;
-    const lat2 = (coords.latitude * Math.PI) / 180;
-    const lng2 = (coords.longitude * Math.PI) / 180;
+      //const schoolLocation = { lat: 49.2008356, lng: -0.3501047 };
+      const schoolLocation = { lat: 49.183289, lng: -0.405666 };
 
-    // Haversine formula
-    const dlat = lat2 - lat1;
-    const dlng = lng2 - lng1;
-    const a =
-      Math.sin(dlat / 2) ** 2 +
-      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      // Convert to radians
+      const lat1 = (schoolLocation.lat * Math.PI) / 180;
+      const lng1 = (schoolLocation.lng * Math.PI) / 180;
+      const lat2 = (coords.latitude * Math.PI) / 180;
+      const lng2 = (coords.longitude * Math.PI) / 180;
 
-    // Earth radius in km
-    const R = 6371;
+      // Haversine formula
+      const dlat = lat2 - lat1;
+      const dlng = lng2 - lng1;
+      const a =
+        Math.sin(dlat / 2) ** 2 +
+        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    // Distance in km
-    const distance = R * c;
+      // Earth radius in km
+      const R = 6371;
 
-    // If the user is in a 1km circle around the school location
-    const isLocationValid = distance <= 1;
-    console.info(isLocationValid ? "Location is valid" : "Location is invalid");
-    setShowScanner(isLocationValid); // Set showScanner based on the result
-  };
+      // Distance in km
+      const distance = R * c;
+
+      // If the user is in a 1km circle around the school location
+      const isLocationValid = distance <= 1;
+      console.info(
+        isLocationValid ? "Location is valid" : "Location is invalid"
+      );
+      setLocationValid(isLocationValid);
+    };
+
+    handleCompleteQuest();
+  }, [isGeolocationAvailable, isGeolocationEnabled, coords]);
 
   return (
     <div className="bg-white">
@@ -107,43 +109,48 @@ const App = () => {
         </div>
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
+            <div className="scanner">
+              {locationValid ? (
+                <div className="flex flex-col items-center justify-center">
+                  <h1>QR SCANNER</h1>
+                  <Scanner />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <p className="text-2xl font-bold text-gray-900">
+                    You must be at school to scan QR codes!
+                  </p>
+                </div>
+              )}
+            </div>
             <ul
               role="list"
               className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
-            {Array.isArray(quests) && quests.map((quest) => (
-            <li key={quest.code} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
-                <div className="flex w-full items-center justify-between space-x-6 p-6">
-                  <div className="flex-1 truncate">
-                    <div className="flex items-center space-x-3">
-                      <h3 className="truncate text-sm font-medium text-gray-900">
-                        {quest.name}
-                      </h3>
+              {Array.isArray(quests) &&
+                quests.map((quest) => (
+                  <li
+                    key={quest.code}
+                    className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
+                  >
+                    <div className="flex w-full items-center justify-between space-x-6 p-6">
+                      <div className="flex-1 truncate">
+                        <div className="flex items-center space-x-3">
+                          <h3 className="truncate text-sm font-medium text-gray-900">
+                            {quest.name}
+                          </h3>
+                        </div>
+                        <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-inset ring-green-600/20">
+                          Completed
+                        </span>
+                        <p className="mt-1 truncate text-sm text-gray-500">
+                          {quest.description}
+                        </p>
+                      </div>
                     </div>
-                    <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-inset ring-green-600/20">
-                      Completed
-                    </span>
-                    <p className="mt-1 truncate text-sm text-gray-500">
-                      {quest.description}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <div className="-mt-px flex divide-x divide-gray-200">
-                    <div className="-ml-px flex w-0 flex-1">
-                      <a
-                        className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
-                        onClick={handleCompleteQuest}
-                      >
-                        Complete quest
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            ))}
+                  </li>
+                ))}
             </ul>
-            {showScanner && <Scanner />}
           </div>
         </div>
         <div
