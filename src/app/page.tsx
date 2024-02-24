@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./globals.css";
 import Scanner from "./components/scanner";
 import { UserButton } from "@clerk/nextjs";
@@ -8,6 +8,14 @@ import { useGeolocated } from "react-geolocated";
 
 const App = () => {
   const [showScanner, setShowScanner] = useState(false);
+  const [quests, setQuests] = useState("")
+  
+  useEffect(()=>{
+    fetch('/api/quests')
+        .then((response)=>response.json())
+        .then((json)=>setQuests(json))
+  },[])
+
   const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
     positionOptions: {
       enableHighAccuracy: true,
@@ -16,7 +24,7 @@ const App = () => {
   });
 
   const handleCompleteQuest = async () => {
-    // Hide the scanner i its already shown
+    // Hide the scanner if its already shown
     if (showScanner) {
       setShowScanner(false);
       return;
@@ -27,7 +35,8 @@ const App = () => {
       return;
     }
 
-    const schoolLocation = { lat: 49.2008356, lng: -0.3501047 };
+    //const schoolLocation = { lat: 49.2008356, lng: -0.3501047 };
+    const schoolLocation = { lat: 49.18384013699151, lng: -0.35605318900986616 };
 
     // Convert to radians
     const lat1 = (schoolLocation.lat * Math.PI) / 180;
@@ -51,6 +60,7 @@ const App = () => {
 
     // If the user is in a 1km circle around the school location
     const isLocationValid = distance <= 1;
+    console.info(isLocationValid ? "Location is valid" : "Location is invalid");
     setShowScanner(isLocationValid); // Set showScanner based on the result
   };
 
@@ -101,19 +111,20 @@ const App = () => {
               role="list"
               className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
-              <li className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+            {Array.isArray(quests) && quests.map((quest) => (
+            <li key={quest.code} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
                 <div className="flex w-full items-center justify-between space-x-6 p-6">
                   <div className="flex-1 truncate">
                     <div className="flex items-center space-x-3">
                       <h3 className="truncate text-sm font-medium text-gray-900">
-                        Nom de la quete
+                        {quest.name}
                       </h3>
                     </div>
                     <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-inset ring-green-600/20">
                       Completed
                     </span>
                     <p className="mt-1 truncate text-sm text-gray-500">
-                      Description
+                      {quest.description}
                     </p>
                   </div>
                 </div>
@@ -130,6 +141,7 @@ const App = () => {
                   </div>
                 </div>
               </li>
+            ))}
             </ul>
             {showScanner && <Scanner />}
           </div>

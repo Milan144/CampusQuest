@@ -26,7 +26,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/components/scanner.js"
+    "src/app/components/scanner.js",
+    "src/app/api/hello/route.js",
+    "src/app/api/quests/route.js"
   ],
   "exclude": ["node_modules"]
 }
