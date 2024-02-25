@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.7",
+    "@ducanh2912/next-pwa": "^10.2.5",
     "modern-react-qr-reader": "^1.0.12",
     "mongodb": "^6.3.0",
     "next": "14.1.0",

@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: "Campus Quest",
   description: "A MDS school project",
 };
