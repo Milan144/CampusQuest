@@ -2,30 +2,19 @@
 import React, { useEffect, useState } from "react";
 import "./globals.css";
 import Scanner from "./components/scanner";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useGeolocated } from "react-geolocated";
 
 const App = () => {
   const [locationValid, setLocationValid] = useState(false);
   const [quests, setQuests] = useState("");
-  const [user, setUser] = useState<User | string>("");  
-
-  interface User {
-    id: string;
-    firstName: string;
-  }
+  const { user } = useUser();
 
   useEffect(() => {
     fetch("/api/quests")
       .then((response) => response.json())
       .then((json) => setQuests(json));
-  }, []);
-
-  useEffect(() => {
-    fetch("/api/user")
-      .then((response) => response.json())
-      .then((json) => setUser(json));
   }, []);
 
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
