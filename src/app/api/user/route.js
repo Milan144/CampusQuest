@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs";
 
-export async function GET() {
+export async function GET(req, res) {
   try {
     const user = await currentUser();
     return NextResponse.json(user);

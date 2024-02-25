@@ -9,7 +9,7 @@ import { useGeolocated } from "react-geolocated";
 const App = () => {
   const [locationValid, setLocationValid] = useState(false);
   const [quests, setQuests] = useState("");
-  const [user, setUser] = useState<User | null>(null);  
+  const [user, setUser] = useState<User | string>("");  
 
   interface User {
     id: string;
