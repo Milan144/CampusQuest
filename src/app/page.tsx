@@ -9,14 +9,21 @@ import { useGeolocated } from "react-geolocated";
 const App = () => {
   const [locationValid, setLocationValid] = useState(false);
   const [quests, setQuests] = useState("");
+  // Getting the user
   const { user } = useUser();
 
+  // Fetching quests 
   useEffect(() => {
-    fetch("/api/quests")
-      .then((response) => response.json())
-      .then((json) => setQuests(json));
-  }, []);
+    const fetchQuests = async () => {
+      const response = await fetch(`/api?userId=${user?.id}`);
+      const data = await response.json();
+      setQuests(data);
+    };
 
+    fetchQuests();
+  }, [user]);
+
+  // Checking if the user as activated the geolocation
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
     useGeolocated({
       positionOptions: {
@@ -25,6 +32,7 @@ const App = () => {
       userDecisionTimeout: 5000,
     });
 
+  // Checking if the user is at school
   useEffect(() => {
     const handleCompleteQuest = async () => {
       if (!isGeolocationAvailable || !isGeolocationEnabled || coords == null) {
@@ -150,7 +158,7 @@ const App = () => {
                           </h3>
                         </div>
                         <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-inset ring-green-600/20">
-                          Completed
+                          {quest.completed ? "Completed" : "Not completed"}
                         </span>
                         <p className="mt-1 truncate text-sm text-gray-500">
                           {quest.description}

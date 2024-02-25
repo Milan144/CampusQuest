@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "src/app/components/scanner.js",
     "src/app/api/hello/route.js",
-    "src/app/api/quests/route.js"
+    "src/app/api/quests/[userId].ts"
   ],
   "exclude": ["node_modules"]
 }
