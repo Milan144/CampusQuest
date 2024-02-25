@@ -8,7 +8,10 @@ class Scanner extends Component {
 
     this.state = {
       result: "No result",
+      response: ""
     };
+
+    console.log(this.props.user);
 
     this.handleError = this.handleError.bind(this);
     this.handleScan = this.handleScan.bind(this);
@@ -18,6 +21,17 @@ class Scanner extends Component {
     if (data) {
       console.info(data);
       this.setState({ result: data });
+      // Call api to validate the code and if it's valid, complete the quest
+      fetch(`/api?code=${this.state.result}&id=${this.props.user?.id}`, {
+        method: "POST"
+      }).then((response) => {
+        if(response.status === 200) {
+          this.setState({ response: "Quest completed!" });
+          this.props.onQuestCompleted();
+        } else {
+            this.setState({ response: "The quest is already completed or the code is invalid." });
+        }
+      });
     }
   };
 
@@ -35,7 +49,7 @@ class Scanner extends Component {
           onScan={this.handleScan}
           style={{ width: "100%" }}
         />
-        <p>{this.state.result}</p>
+        <p>{this.state.response}</p>
       </div>
     );
   }

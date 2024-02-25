@@ -9,6 +9,7 @@ import { useGeolocated } from "react-geolocated";
 const App = () => {
   const [locationValid, setLocationValid] = useState(false);
   const [quests, setQuests] = useState("");
+  const [reloadQuests, setReloadQuests] = useState(false);
   // Getting the user
   const { user } = useUser();
 
@@ -19,9 +20,10 @@ const App = () => {
       const data = await response.json();
       setQuests(data);
     };
-
-    fetchQuests();
-  }, [user]);
+    if(user && user.id != 'undefined'){
+      fetchQuests();
+    }
+  }, [user, reloadQuests]);
 
   // Checking if the user as activated the geolocation
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
@@ -125,21 +127,23 @@ const App = () => {
                 </h2>
               )}
             </div>
-            <div className="scanner">
-              {/* {locationValid ? ( */}
-              {/*   <div className="flex flex-col items-center justify-center"> */}
-              {/*     <h1>QR SCANNER</h1> */}
-              {/*     <Scanner /> */}
-              {/*   </div> */}
-              {/* ) : ( */}
-              {/*   <div className="flex items-center justify-center"> */}
-              {/*     <p className="text-2xl font-bold text-gray-900"> */}
-              {/*       You must be at school to scan QR codes! */}
-              {/*     </p> */}
-              {/*   </div> */}
-              {/* )} */}
-              <Scanner/>
-            </div>
+            {user && typeof user === 'object' && user.id && (
+              <div className="scanner">
+                {/* {locationValid ? ( */}
+                {/*   <div className="flex flex-col items-center justify-center"> */}
+                {/*     <h1>QR SCANNER</h1> */}
+                {/*     <Scanner /> */}
+                {/*   </div> */}
+                {/* ) : ( */}
+                {/*   <div className="flex items-center justify-center"> */}
+                {/*     <p className="text-2xl font-bold text-gray-900"> */}
+                {/*       You must be at school to scan QR codes! */}
+                {/*     </p> */}
+                {/*   </div> */}
+                {/* )} */}
+                <Scanner user={user} onQuestCompleted={() => setReloadQuests(prev => !prev)}/>
+              </div>
+            )}
             <ul
               role="list"
               className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
@@ -171,7 +175,7 @@ const App = () => {
                 <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center">
                   <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
                   <h2 className="text-center text-white text-xl font-semibold">Loading...</h2>
-                  <p className="w-1/3 text-center text-white">The quests are loading, this may take a few seconds, please don't close this page.</p>
+                  <p className="w-1/3 text-center text-white">The quests are loading, this may take a few seconds, please don&apos;t close this page.</p>
                 </div>
               )}
             </ul>
