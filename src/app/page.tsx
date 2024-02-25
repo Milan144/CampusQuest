@@ -9,11 +9,23 @@ import { useGeolocated } from "react-geolocated";
 const App = () => {
   const [locationValid, setLocationValid] = useState(false);
   const [quests, setQuests] = useState("");
+  const [user, setUser] = useState<User | null>(null);  
+
+  interface User {
+    id: string;
+    firstName: string;
+  }
 
   useEffect(() => {
     fetch("/api/quests")
       .then((response) => response.json())
       .then((json) => setQuests(json));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/user")
+      .then((response) => response.json())
+      .then((json) => setUser(json));
   }, []);
 
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
@@ -108,20 +120,28 @@ const App = () => {
           </div>
         </div>
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-          <div className="text-center">
-            <div className="scanner">
-              {locationValid ? (
-                <div className="flex flex-col items-center justify-center">
-                  <h1>QR SCANNER</h1>
-                  <Scanner />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <p className="text-2xl font-bold text-gray-900">
-                    You must be at school to scan QR codes!
-                  </p>
-                </div>
+          <div className="text-center"> 
+          <div>
+              {user && typeof user === 'object' && user.id && (
+                <h2 className="text-3xl font-bold text-gray-900">
+                  Welcome, {user.firstName}!
+                </h2>
               )}
+            </div>
+            <div className="scanner">
+              {/* {locationValid ? ( */}
+              {/*   <div className="flex flex-col items-center justify-center"> */}
+              {/*     <h1>QR SCANNER</h1> */}
+              {/*     <Scanner /> */}
+              {/*   </div> */}
+              {/* ) : ( */}
+              {/*   <div className="flex items-center justify-center"> */}
+              {/*     <p className="text-2xl font-bold text-gray-900"> */}
+              {/*       You must be at school to scan QR codes! */}
+              {/*     </p> */}
+              {/*   </div> */}
+              {/* )} */}
+              <Scanner/>
             </div>
             <ul
               role="list"
