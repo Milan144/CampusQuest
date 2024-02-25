@@ -11,15 +11,12 @@ class Scanner extends Component {
       response: ""
     };
 
-    console.log(this.props.user);
-
     this.handleError = this.handleError.bind(this);
     this.handleScan = this.handleScan.bind(this);
   }
 
   handleScan = (data) => {
     if (data) {
-      console.info(data);
       this.setState({ result: data });
       // Call api to validate the code and if it's valid, complete the quest
       fetch(`/api?code=${this.state.result}&id=${this.props.user?.id}`, {
