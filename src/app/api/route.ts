@@ -2,14 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "../../../lib/mongodb";
 
 export async function GET(req: NextRequest) {
+  // Getting params
+  const seachParams = req.nextUrl.searchParams;
+  const userId = seachParams.get("userId");
   try {
-    // Getting params
-    const seachParams = req.nextUrl.searchParams;
-
-    const userId = seachParams.get("userId");
-
-    console.log(userId);
-    
     // Handle missing userId
     if (!userId) {
       return NextResponse.error();
