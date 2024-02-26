@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "../../../../lib/mongodb";
 
 export async function GET(req: NextRequest) {
   // Getting params
@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   try {
     // Handle missing userId
     if (userId == 'undefined' || !userId) {
-      return new NextResponse("No user", { status: 400 });
+      return new NextResponse("No user", { status: 401 });
     }
 
     // Initialize MongoDB
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(updatedQuests);
   } catch (e) {
     console.error(e);
-    return new NextResponse("Error", { status: 400 });
+    return new NextResponse("Error", { status: 401 });
   }
 }
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, res: any) {
   const id = seachParams.get("id");
   try {
     if (!code) {
-      return new NextResponse("Code not found", { status: 400 });
+      return new NextResponse("Code not found", { status: 401 });
     }
     // Initialize MongoDB
     const client = await clientPromise;
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest, res: any) {
     // Finding the quest by code
     const quest = await db.collection("Quests").findOne({ code: code });
     if (!quest) {
-      return new NextResponse("Quest not found", { status: 400 });
+      return new NextResponse("Quest not found", { status: 401 });
     }
 
     // Finding the userQuest by questName and userId and if it is not completed, it updates the completed status
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest, res: any) {
 
     // If its already completed, return a message
     if (userQuest && userQuest.completed) {
-      return new NextResponse("Quest already completed", { status: 400 });
+      return new NextResponse("Quest already completed", { status: 401 });
     } else {
       // Update the userQuest to status completed
       await db.collection("UserQuests").updateOne({ quest: quest?.name, user: id }, { $set: { completed: true } });
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest, res: any) {
     }
   } catch (e) {
     console.error(e);
-    return new NextResponse("Error", { status: 500 });
+    return new NextResponse("Error", { status: 501 });
   }
 }
 

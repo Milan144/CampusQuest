@@ -29,7 +29,7 @@ const App = () => {
   // Fetching quests 
   useEffect(() => {
     const fetchQuests = async () => {
-      const response = await fetch(`/api?userId=${user?.id}`);
+      const response = await fetch(`/api/quests?userId=${user?.id}`);
       const data = await response.json();
       setQuests(data);
     };
