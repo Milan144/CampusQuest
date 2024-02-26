@@ -1,29 +1,28 @@
 {
-  "id": "pwa-campus-quest",
   "name": "Campus Quest",
   "short_name": "Campus Quest",
-  "description": "School project PWA.",
+  "theme_color": "#F4900C",
+  "background_color": "#ffffff",
+  "description": "Campus Quest is a game that helps students to get to know their campus better.",
   "icons": [
     {
       "src": "./img/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "./img/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png"
-    },
-    {
-      "src": "./img/icons/icon-512x512
+      "src": "./img/icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "theme_color": "#FFFFFF",
-  "background_color": "#FFFFFF",
-  "start_url": "/",
-  "scope": ".",
   "display": "standalone",
-  "orientation": "portrait"
+  "display_override": ["fullscreen", "minimal-ui"],
+  "orientation": "portrait",
+  "start_url": "/",
+  "id": "/",
+  "splash_pages": null,
+  "prefer_related_applications": true
 }
