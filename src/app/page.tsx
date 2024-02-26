@@ -13,6 +13,19 @@ const App = () => {
   // Getting the user
   const { user } = useUser();
 
+  if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker
+        .register("/data-service-worker.js")
+        .then(function (registration) {
+          console.log(
+            "ServiceWorker registration successful with scope: ",
+            registration.scope
+          );
+        });
+    });
+  }
+
   // Fetching quests 
   useEffect(() => {
     const fetchQuests = async () => {
