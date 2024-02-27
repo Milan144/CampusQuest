@@ -132,15 +132,34 @@ const App = () => {
           </div>
         </div>
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-          <div className="text-center"> 
-          <div>
-              {user && typeof user === 'object' && user.id && (
+          <div className="text-center">
+            <div>
+              {user && typeof user === "object" && user.id && (
                 <h2 className="text-3xl font-bold text-gray-900">
                   Welcome, {user.firstName}!
                 </h2>
               )}
-            </div>
-            {user && typeof user === 'object' && user.id && (
+          </div>
+          <br />
+          <div className="flex justify-between">
+            <button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-2"
+              onClick={() => window.location.replace("/share")}
+            >
+              Share
+            </button>
+            <button
+              type="submit"
+              className="text-white bg-orange-500 hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-blue-800"
+              onClick={() => window.location.replace("/help")}
+            >
+              Help
+            </button>
+          </div>
+          <br />
+
+            {user && typeof user === "object" && user.id && (
               <div className="scanner">
                 {/* {locationValid ? ( */}
                 {/*   <div className="flex flex-col items-center justify-center"> */}
@@ -154,7 +173,10 @@ const App = () => {
                 {/*     </p> */}
                 {/*   </div> */}
                 {/* )} */}
-                <Scanner user={user} onQuestCompleted={() => setReloadQuests(prev => !prev)}/>
+                <Scanner
+                  user={user}
+                  onQuestCompleted={() => setReloadQuests((prev) => !prev)}
+                />
               </div>
             )}
             <ul
@@ -187,8 +209,13 @@ const App = () => {
               ) : (
                 <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center">
                   <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-                  <h2 className="text-center text-white text-xl font-semibold">Loading...</h2>
-                  <p className="w-1/3 text-center text-white">The quests are loading, this may take a few seconds, please don&apos;t close this page.</p>
+                  <h2 className="text-center text-white text-xl font-semibold">
+                    Loading...
+                  </h2>
+                  <p className="w-1/3 text-center text-white">
+                    The quests are loading, this may take a few seconds, please
+                    don&apos;t close this page.
+                  </p>
                 </div>
               )}
             </ul>

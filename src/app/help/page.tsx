@@ -58,6 +58,13 @@ const Help = () => {
           />
         </div>
         <div className="flex justify-between">
+          <button
+            type="submit"
+            className="text-white bg-blue-700 hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-25 sm:w-auto px-3 py-1 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-2"
+            onClick={() => window.location.replace("/")}
+          >
+            Home
+          </button>
           <div className="flex items-center userbtn">
             <UserButton />
           </div>
@@ -76,9 +83,8 @@ const Help = () => {
         </div>
         <div className="mx-auto max-w-1xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900">
-              Ask for help
-            </h1>
+            <br />
+            <h1 className="text-4xl font-bold text-gray-900">Ask for help</h1>
             <form
               className="max-w-sm mx-auto"
               onSubmit={(e) => {
