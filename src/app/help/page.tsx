@@ -22,6 +22,29 @@ const Help = () => {
     }
   }, [user, reloadHelp]);
 
+    // New help object
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+
+    // Submitting a POST request to create a new help request
+    const submitHelp = async () => {
+        const newHelp = {
+            title: title
+            description: description,
+            user: user.id
+        };
+        const response = await fetch("/api/help", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newHelp),
+        });
+        if (response.ok) {
+            setReloadHelp(!reloadHelp);
+        }
+    };
+
   return (
     <div className="bg-white">
       <div className="relative isolate px-5 pt-5 lg:px-8">

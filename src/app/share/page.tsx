@@ -21,6 +21,29 @@ const Share = () => {
     }
   }, [user, reloadShare]);
 
+    // New help object
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+
+    // Submitting a POST request to create a new share post
+    const submitShare = async () => {
+        const newShare = {
+            title: title
+            description: description,
+            user: user.id
+        };
+        const response = await fetch("/api/share", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newShare)
+        });
+        if (response.ok) {
+            setReloadShare(!reloadShare)
+        }
+    };
+
   return (
     <div className="bg-white">
       <div className="relative isolate px-5 pt-5 lg:px-8">
