@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 const Share = () => {
   const [share, setShare] = useState("");
   const [reloadShare, setReloadShare] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const { user } = useUser();
   
@@ -21,27 +23,23 @@ const Share = () => {
     }
   }, [user, reloadShare]);
 
-    // New help object
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-
     // Submitting a POST request to create a new share post
     const submitShare = async () => {
-        const newShare = {
-            title: title
-            description: description,
-            user: user.id
-        };
-        const response = await fetch("/api/share", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newShare)
-        });
-        if (response.ok) {
-            setReloadShare(!reloadShare)
-        }
+      const newShare = {
+          title: title,
+          description: description,
+          user: user?.firstName
+      };
+      const response = await fetch("/api/share", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newShare)
+      });
+      if (response.ok) {
+          setReloadShare(!reloadShare)
+      }
     };
 
   return (
@@ -60,15 +58,6 @@ const Share = () => {
           />
         </div>
         <div className="flex justify-between">
-          <div className="flex items-center">
-            <Image
-              src="/img/icons/icon-511x512.png"
-              alt="Campus Quest Icon"
-              width={41}
-              height={51}
-              className="icon"
-            />
-          </div>
           <div className="flex items-center userbtn">
             <UserButton />
           </div>
@@ -87,6 +76,46 @@ const Share = () => {
         </div>
         <div className="mx-auto max-w-1xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-900">
+              Share your accomplishments
+            </h1>
+            <form
+              className="max-w-sm mx-auto"
+              onSubmit={(e) => {
+                e.preventDefault();
+                submitShare();
+              }}
+            >
+              <div className="mb-5">
+                <input
+                  type="text"
+                  id="title"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Title"
+                  required
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div className="mb-5">
+                <input
+                  type="text"
+                  id="description"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Description"
+                  required
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+              <button
+                type="submit"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Submit
+              </button>
+            </form>
+            <br />
             <ul
               role="list"
               className="grid grid-cols0 gap-6 sm:grid-cols-2 lg:grid-cols-3"
@@ -100,15 +129,15 @@ const Share = () => {
                     <div className="flex w-full items-center justify-between space-x-5 p-6">
                       <div className="flex0 truncate">
                         <div className="flex items-center space-x-2">
+                          <span className="inline-flex flex-shrink1 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-inset ring-green-600/20">
+                            {share.user}
+                          </span>
                           <h4 className="truncate text-sm font-medium text-gray-900">
                             {share.title}
                           </h4>
                         </div>
-                        <span className="inline-flex flex-shrink1 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-inset ring-green-600/20">
-                          {share.description ? "Completed" : "Not completed"}
-                        </span>
                         <p className="mt0 truncate text-sm text-gray-500">
-                          {share.user}
+                          {share.description}
                         </p>
                       </div>
                     </div>

@@ -19,7 +19,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   // Getting the new share object from the request body
-  const share = req.body;
+  const share = await req.json();
+
   try {
     if (!share) {
       return new NextResponse("Missing datas", { status: 400 });

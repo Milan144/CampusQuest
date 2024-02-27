@@ -19,7 +19,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   // Getting the new help object from the request body
-  const help = req.body;
+  const help = await req.json();
   try {
     if (!help) {
       return new NextResponse("Missing datas", { status: 400 });
