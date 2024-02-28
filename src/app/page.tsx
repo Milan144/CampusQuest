@@ -5,9 +5,11 @@ import Scanner from "./components/scanner";
 import { UserButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useGeolocated } from "react-geolocated";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
-  const [locationValid, setLocationValid] = useState(false);
+  const [showModal, setShowModal] = React.useState(false);
   const [quests, setQuests] = useState("");
   const [reloadQuests, setReloadQuests] = useState(false);
   // Getting the user
@@ -18,7 +20,7 @@ const App = () => {
       navigator.serviceWorker
         .register("/data-service-worker.js")
         .then(function (registration) {
-          console.log(
+          console.info(
             "ServiceWorker registration successful with scope: ",
             registration.scope
           );
@@ -26,14 +28,38 @@ const App = () => {
     });
   }
 
-  // Fetching quests 
+  // Notifications
+  const notifyLocationUnavailable = () =>
+    toast("Geolocation not available or not enabled");
+  const notifyLocation = () => toast("You must be at school to scan QR codes!");
+  const notifyHalf = () => toast("You have completed half of the quests!");
+  const notifyFull = () => toast("You have completed all the quests!");
+  const notifyValidated = () => toast("The quest has been validated!");
+
+  interface quest {
+    id: string;
+    name: string;
+    description: string;
+    completed: boolean;
+  }
+
+  // Fetching quests
   useEffect(() => {
     const fetchQuests = async () => {
       const response = await fetch(`/api/quests?userId=${user?.id}`);
       const data = await response.json();
       setQuests(data);
+      // If 5 or 10 quests have been completed we show a notification
+      let completed = 0;
+      data.forEach((quest: quest) => {
+        if (quest.completed) {
+          completed++;
+        }
+      });
+      if (completed === 5) notifyHalf();
+      if (completed === 10) notifyFull();
     };
-    if(user && user.id != 'undefined'){
+    if (user && user.id != "undefined") {
       fetchQuests();
     }
   }, [user, reloadQuests]);
@@ -47,48 +73,42 @@ const App = () => {
       userDecisionTimeout: 5000,
     });
 
-  // Checking if the user is at school
-  useEffect(() => {
-    const handleCompleteQuest = async () => {
-      if (!isGeolocationAvailable || !isGeolocationEnabled || coords == null) {
-        console.error("Geolocation not available or not enabled");
-        // TODO: Show error popup
-        return;
-      }
+  // Checking if the user is at school (return bool)
+  const checkLocation = async () => {
+    if (!isGeolocationAvailable || !isGeolocationEnabled || coords == null) {
+      console.error("Geolocation not available or not enabled");
+      notifyLocationUnavailable();
+      return;
+    }
 
-      //const schoolLocation = { lat: 49.2008356, lng: -0.3501047 };
-      const schoolLocation = { lat: 49.183289, lng: -0.405666 };
+    const schoolLocation = { lat: 49.183749, lng: -0.356043 };
+    // const schollLocation = { lat: 49.20077497943215, lng: -0.3500420215185125 };
 
-      // Convert to radians
-      const lat1 = (schoolLocation.lat * Math.PI) / 180;
-      const lng1 = (schoolLocation.lng * Math.PI) / 180;
-      const lat2 = (coords.latitude * Math.PI) / 180;
-      const lng2 = (coords.longitude * Math.PI) / 180;
+    // Convert to radians
+    const lat1 = (schoolLocation.lat * Math.PI) / 180;
+    const lng1 = (schoolLocation.lng * Math.PI) / 180;
+    const lat2 = (coords.latitude * Math.PI) / 180;
+    const lng2 = (coords.longitude * Math.PI) / 180;
 
-      // Haversine formula
-      const dlat = lat2 - lat1;
-      const dlng = lng2 - lng1;
-      const a =
-        Math.sin(dlat / 2) ** 2 +
-        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    // Haversine formula
+    const dlat = lat2 - lat1;
+    const dlng = lng2 - lng1;
+    const a =
+      Math.sin(dlat / 2) ** 2 +
+      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-      // Earth radius in km
-      const R = 6371;
+    // Earth radius in km
+    const R = 6371;
 
-      // Distance in km
-      const distance = R * c;
+    // Distance in km
+    const distance = R * c;
 
-      // If the user is in a 1km circle around the school location
-      const isLocationValid = distance <= 1;
-      console.info(
-        isLocationValid ? "Location is valid" : "Location is invalid"
-      );
-      setLocationValid(isLocationValid);
-    };
-
-    handleCompleteQuest();
-  }, [isGeolocationAvailable, isGeolocationEnabled, coords]);
+    // If the user is in a 1km circle around the school location
+    const isLocationValid = distance <= 1;
+    console.info(isLocationValid ? "Location is valid" : "Location is invalid");
+    return isLocationValid;
+  };
 
   return (
     <div className="bg-white">
@@ -131,6 +151,7 @@ const App = () => {
             />
           </div>
         </div>
+        <ToastContainer />
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
             <div>
@@ -139,46 +160,85 @@ const App = () => {
                   Welcome, {user.firstName}!
                 </h2>
               )}
-          </div>
-          <br />
-          <div className="flex justify-between">
+            </div>
+            <br />
+            <div className="flex justify-between">
+              <button
+                type="submit"
+                className="text-white bg-blue-700 hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-2"
+                onClick={() => window.location.replace("/share")}
+              >
+                Share
+              </button>
+              <button
+                type="submit"
+                className="text-white bg-orange-500 hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-blue-800"
+                onClick={() => window.location.replace("/help")}
+              >
+                Help
+              </button>
+            </div>
+            <br />
             <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-2"
-              onClick={() => window.location.replace("/share")}
+              className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              type="button"
+              onClick={async () => {
+                if (await checkLocation()) {
+                  setShowModal(true);
+                } else {
+                  notifyLocation();
+                }
+              }}
             >
-              Share
+              SCAN A QR CODE
             </button>
-            <button
-              type="submit"
-              className="text-white bg-orange-500 hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-blue-800"
-              onClick={() => window.location.replace("/help")}
-            >
-              Help
-            </button>
-          </div>
-          <br />
-
-            {user && typeof user === "object" && user.id && (
-              <div className="scanner">
-                {/* {locationValid ? ( */}
-                {/*   <div className="flex flex-col items-center justify-center"> */}
-                {/*     <h1>QR SCANNER</h1> */}
-                {/*     <Scanner /> */}
-                {/*   </div> */}
-                {/* ) : ( */}
-                {/*   <div className="flex items-center justify-center"> */}
-                {/*     <p className="text-2xl font-bold text-gray-900"> */}
-                {/*       You must be at school to scan QR codes! */}
-                {/*     </p> */}
-                {/*   </div> */}
-                {/* )} */}
-                <Scanner
-                  user={user}
-                  onQuestCompleted={() => setReloadQuests((prev) => !prev)}
-                />
-              </div>
-            )}
+            <br />
+            {showModal ? (
+              <>
+                <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                  <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                      <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                        <h3 className="text-3xl font-semibold">
+                          QR CODE SCANNER
+                        </h3>
+                        <button
+                          className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                          onClick={() => setShowModal(false)}
+                        >
+                          <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                            ×
+                          </span>
+                        </button>
+                      </div>
+                      <div className="relative p-6 flex-auto">
+                        {user && typeof user === "object" && user.id && (
+                          <div className="scanner">
+                            <Scanner
+                              user={user}
+                              onQuestCompleted={() =>
+                                setReloadQuests((prev) => !prev)
+                              }
+                              onQuestValidated={() => notifyValidated()}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                        <button
+                          className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          type="button"
+                          onClick={() => setShowModal(false)}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+              </>
+            ) : null}
             <ul
               role="list"
               className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"

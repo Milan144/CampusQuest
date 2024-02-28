@@ -19,7 +19,7 @@ class Scanner extends Component {
     if (data) {
       this.setState({ result: data });
       // Call api to validate the code and if it's valid, complete the quest
-      fetch(`/api?code=${this.state.result}&id=${this.props.user?.id}`, {
+      fetch(`/api/quests?code=${this.state.result}&id=${this.props.user?.id}`, {
         method: "POST"
       }).then((response) => {
         if(response.status === 200) {
