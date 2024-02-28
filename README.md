@@ -1,4 +1,7 @@
-# This documentation is available in french and english
+# Campus Quest
+This is a school project for MyDigitalSchool (MBA 1)
+
+*This documentation is available in french and english*
 1. [FR](#FR)
 2. [EN](#EN)
 
