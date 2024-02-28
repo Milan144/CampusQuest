@@ -1,36 +1,211 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Campus Quest
+This is a school project for MyDigitalSchool (MBA 1)
 
-## Getting Started
+*This documentation is available in french and english*
+1. [FR](#FR)
+2. [EN](#EN)
 
-First, run the development server:
+# FR
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Documentation utilisateur
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Liens pour se connecter à l'application : 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Version de test sans vérification de la localisation [ICI](https://cqtest.hommet.ch)
+- Version avec vérification de la localisation (ne marche que a MDS) [ICI](https://cq.hommet.ch)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Connexion
 
-## Learn More
+Quand on arrive sur l'application / site pour la première fois, une page de connexion apparait : on peut se connecter ou créer un compte via email et mot de passe ou via un compte GitHub.
 
-To learn more about Next.js, take a look at the following resources:
+### L'application se compose de trois pages :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Page principale avec les quêtes et le scanner de quêtes
+- Page de partage où l'on peut voir les posts et poster un nouveau post
+- Page d'assistance où l'on peut envoyer une  demande d'aide
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Installation en PWA
 
-## Deploy on Vercel
+Pour installer en PWA, sur mobile, cliquer sur le bouton de partage du navigateur (safari sur iPhone) puis sur *Ajouter a l'écran d'accueil*.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Validation d'une quête
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Cliquer sur le bouton *SCAN A QR CODE*
+- Scanner le QR code correspondant a une quête
+- Cliquer sur le bouton *Close*
+- La quête passe au statut *Complete*
+
+### Poster un nouveau post
+
+Cliquer sur le bouton *Share* : on accède à la liste des posts et on peut faire un nouveau post en remplissant le formulaire.
+
+### Poster une demande d'aide
+
+Cliquer sur le bouton *Help* : on accède à la liste des demandes d'aides déjà existantes et on peut faire une nouvelle demande en remplissant le formulaire.
+
+## Documentation technique
+
+### Technologies utilisées
+
+Projet :
+- NextJS 14
+- Typescript
+- Bun
+
+BDD : 
+- MongoDB avec MongoDBAtlas
+
+Style : 
+- TailwindCss
+- tw-elements
+- react-toastify
+
+Authentification:
+- Clerk
+
+PWA: 
+- next-pwa
+- react-geolocated
+- modern-react-qr-reader
+  
+### Api
+
+L'api est composée de trois routes principales : 
+
+- /quests
+- /share
+- /help
+
+Chaque route dispose d'une méthode GET pour récupérer la liste des éléments depuis la base de données et d'une méthode POST pour envoyer un nouvel élément en bdd ou mettre à jour un élément.
+
+#### /quests
+
+Params du GET : 
+- userId (id de l'user actuellement connecte)
+
+Params du POST :
+- code (code du qr code pour identifier la quête)
+- id (id de l'user actuellement connecte)
+
+#### /share
+
+Params du POST :
+
+Objet dans le body (req.JSON()) composée de :
+
+- title (titre du post)
+- description (description du post)
+- user (nom de l'utilisateur)
+
+#### /help
+
+Params du POST
+
+Objet dans le body (req.JSON()) composée de :
+
+- title (titre de la demande d'aide)
+- description (description de la demande d'aide)
+- user (nom de l'utilisateur)
+
+
+# EN
+
+## User Documentation
+
+### Links to Access the Application:
+
+- Test version without location verification [HERE](https://cqtest.hommet.ch)
+- Version with location verification (only works at MDS) [HERE](https://cq.hommet.ch)
+
+### Login
+
+When accessing the application / site for the first time, a login page appears: you can either log in or create an account via email and password or through a GitHub account.
+
+### The Application Consists of Three Pages:
+
+- Main page with quests and quest scanner
+- Sharing page where you can view posts and create a new post
+- Assistance page where you can send a help request
+
+### PWA Installation
+
+To install as a PWA, on mobile, click on the browser's share button (Safari on iPhone) then on *Add to Home Screen*.
+
+### Validating a Quest
+
+- Click on the *SCAN A QR CODE* button
+- Scan the QR code corresponding to a quest
+- Click on the *Close* button
+- The quest status changes to *Complete*
+
+### Posting a New Post
+
+Click on the *Share* button: you'll access the list of posts and can create a new post by filling out the form.
+
+### Posting a Help Request
+
+Click on the *Help* button: you'll access the list of existing help requests and can make a new request by filling out the form.
+
+## Technical Documentation
+
+### Technologies Used
+
+Project:
+- NextJS 14
+- TypeScript
+- Bun
+
+Database:
+- MongoDB with MongoDBAtlas
+
+Styling:
+- TailwindCSS
+- tw-elements
+- react-toastify
+
+Authentication:
+- Clerk
+
+PWA:
+- next-pwa
+- react-geolocated
+- modern-react-qr-reader
+  
+### API
+
+The API consists of three main routes:
+
+- /quests
+- /share
+- /help
+
+Each route has a GET method to retrieve the list of items from the database and a POST method to send a new item to the database or update an existing one.
+
+#### /quests
+
+GET Params:
+- userId (id of the currently logged-in user)
+
+POST Params:
+- code (QR code code to identify the quest)
+- id (id of the currently logged-in user)
+
+#### /share
+
+POST Params:
+
+Object in the body (req.JSON()) composed of:
+
+- title (title of the post)
+- description (post description)
+- user (user's name)
+
+#### /help
+
+POST Params
+
+Object in the body (req.JSON()) composed of:
+
+- title (title of the help request)
+- description (help request description)
+- user (user's name)
