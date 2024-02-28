@@ -186,6 +186,7 @@ const App = () => {
                   setShowModal(true);
               }}
             >
+
               SCAN A QR CODE
             </button>
             <br />
