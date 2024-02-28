@@ -1,4 +1,8 @@
-# Campus Quest (FR)
+# This documentation is available in french and english
+1. [FR](#FR)
+2. [EN](#EN)
+
+# FR
 
 ## Documentation utilisateur
 
@@ -99,3 +103,106 @@ Objet dans le body (req.JSON()) composée de :
 - title (titre de la demande d'aide)
 - description (description de la demande d'aide)
 - user (nom de l'utilisateur)
+
+
+# EN
+
+## User Documentation
+
+### Links to Access the Application:
+
+- Test version without location verification [HERE](https://cqtest.hommet.ch)
+- Version with location verification (only works at MDS) [HERE](https://cq.hommet.ch)
+
+### Login
+
+When accessing the application / site for the first time, a login page appears: you can either log in or create an account via email and password or through a GitHub account.
+
+### The Application Consists of Three Pages:
+
+- Main page with quests and quest scanner
+- Sharing page where you can view posts and create a new post
+- Assistance page where you can send a help request
+
+### PWA Installation
+
+To install as a PWA, on mobile, click on the browser's share button (Safari on iPhone) then on *Add to Home Screen*.
+
+### Validating a Quest
+
+- Click on the *SCAN A QR CODE* button
+- Scan the QR code corresponding to a quest
+- Click on the *Close* button
+- The quest status changes to *Complete*
+
+### Posting a New Post
+
+Click on the *Share* button: you'll access the list of posts and can create a new post by filling out the form.
+
+### Posting a Help Request
+
+Click on the *Help* button: you'll access the list of existing help requests and can make a new request by filling out the form.
+
+## Technical Documentation
+
+### Technologies Used
+
+Project:
+- NextJS 14
+- TypeScript
+- Bun
+
+Database:
+- MongoDB with MongoDBAtlas
+
+Styling:
+- TailwindCSS
+- tw-elements
+- react-toastify
+
+Authentication:
+- Clerk
+
+PWA:
+- next-pwa
+- react-geolocated
+- modern-react-qr-reader
+  
+### API
+
+The API consists of three main routes:
+
+- /quests
+- /share
+- /help
+
+Each route has a GET method to retrieve the list of items from the database and a POST method to send a new item to the database or update an existing one.
+
+#### /quests
+
+GET Params:
+- userId (id of the currently logged-in user)
+
+POST Params:
+- code (QR code code to identify the quest)
+- id (id of the currently logged-in user)
+
+#### /share
+
+POST Params:
+
+Object in the body (req.JSON()) composed of:
+
+- title (title of the post)
+- description (post description)
+- user (user's name)
+
+#### /help
+
+POST Params
+
+Object in the body (req.JSON()) composed of:
+
+- title (title of the help request)
+- description (help request description)
+- user (user's name)
