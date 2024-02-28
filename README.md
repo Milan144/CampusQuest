@@ -113,6 +113,14 @@ Objet dans le body (req.JSON()) composée de :
 - description (description de la demande d'aide)
 - user (nom de l'utilisateur)
 
+### Déploiement 
+
+- Faire une application Clerk et mettre un token api GitHub en suivant la doc Clerk [https://dashboard.clerk.com/ ](https://clerk.com/docs)
+- Créer une DB MongodbAtlas appellee campusquest et récupérer l'uri de connexion [[https://dashboard.clerk.com/](https://cloud.mongodb.com/)
+- bun install | npm install
+- Compléter les variables d'environnement du .env.local et les mettre dans un .env
+- bun run dev | npm run dev
+
 
 # EN
 
@@ -222,3 +230,11 @@ Object in the body (req.JSON()) composed of:
 - title (title of the help request)
 - description (help request description)
 - user (user's name)
+
+### Deployment
+
+- Develop an application with Clerk and set up a GitHub API token following the Clerk documentation [https://dashboard.clerk.com/](https://clerk.com/docs).
+- Create a MongoDB Atlas database called "campusquest" and retrieve the connection URI from [https://dashboard.clerk.com/](https://cloud.mongodb.com/).
+- Run `bundle install` or `npm install`.
+- Complete the environment variables in the `.env.local` file and transfer them to a `.env` file.
+- Run `bundle run dev` or `npm run dev`.
