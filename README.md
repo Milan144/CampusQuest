@@ -43,6 +43,12 @@ Cliquer sur le bouton *Share* : on accède à la liste des posts et on peut fair
 
 Cliquer sur le bouton *Help* : on accède à la liste des demandes d'aides déjà existantes et on peut faire une nouvelle demande en remplissant le formulaire.
 
+### Utilisation hors ligne (Non fonctionnelle)
+
+L'utilisation hors ligne n'est pas fonctionnelle pour le moment, car le data-service-worker ne fonctionne pas, mais le code est disponible.
+
+Il devrait intercepter la requête API et sauvegarder les données dans le cache local.
+
 ## Documentation technique
 
 ### Technologies utilisées
@@ -145,6 +151,13 @@ Click on the *Share* button: you'll access the list of posts and can create a ne
 ### Posting a Help Request
 
 Click on the *Help* button: you'll access the list of existing help requests and can make a new request by filling out the form.
+
+
+### Offline Usage (Non-functional)
+
+Offline usage is currently not functional as the data-service-worker is not working, but the code is available.
+
+It should intercept the API request and save the data in the local cache.
 
 ## Technical Documentation
 
